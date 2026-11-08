@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | EAGLE Portfolio</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="features.css">
+    <style>
+        body.admin-body { font-family: 'Inter', sans-serif; background: #0f172a; }
+        h1, h2, h3 { font-family: 'Poppins', sans-serif; color: #f1f5f9; }
+        
+        /* SECURITY FIX: Dashboard pehle se hidden rahega */
+        #dashboard { display: none; }
+        
+        .cms-box {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .cms-box label {
+            display: block;
+            color: #94a3b8;
+            font-size: 12px;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .cms-box input, .cms-box textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0b1220;
+            color: white;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        .cms-box input:focus, .cms-box textarea:focus {
+            border-color: #4361ee;
+            outline: none;
+        }
+        .cms-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body class="admin-body">
+
+    <!-- LOGIN SCREEN -->
+    <div class="admin-login" id="loginScreen">
+        <h1>🔐 Admin Panel</h1>
+        <p>EAGLE Portfolio — Secure Area</p>
+        <input type="email" id="emailInput" placeholder="Admin email" autocomplete="off">
+        <input type="password" id="passwordInput" placeholder="Password" autocomplete="off">
+        <button onclick="handleLogin()">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <div class="error-msg" id="errorMsg">❌ Invalid credentials.</div>
+    </div>
+
+    <!-- DASHBOARD (Hidden by default) -->
+    <div class="admin-dashboard" id="dashboard">
+        
+        <!-- Header -->
+        <div class="admin-header">
+            <div>
+                <h1>📊 EAGLE CMS</h1>
+                <span class="badge" id="recordCount">Loading...</span>
+            </div>
+            <div class="admin-actions">
+                <button class="btn-refresh" onclick="window.location.reload()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+                <button class="btn-logout" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total Visits</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-globe"></i></div>
+                <div class="stat-value" id="statCountries">0</div>
+                <div class="stat-label">Countries</div>
+            </div>
+        </div>
+
+        <!-- Website Content Editor -->
+        <div class="cms-box">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px;">✏️ Edit Website Content</h3>
+            
+            <div class="cms-row">
+                <div>
+                    <label>Hero Name</label>
+                    <input type="text" id="editName" placeholder="EAGLE">
+                </div>
+                <div>
+                    <label>Theme Primary Color</label>
+                    <input type="color" id="editColor" style="height: 45px; padding: 5px; cursor: pointer;">
+                </div>
+            </div>
+
+            <div class="cms-row">
+                <div>
+                    <label>Email</label>
+                    <input type="text" id="editEmail" placeholder="ahsanjibran1471@gmail.com">
+                </div>
+                <div>
+                    <label>Phone</label>
+                    <input type="text" id="editPhone" placeholder="+92 346 4198257">
+                </div>
+            </div>
+
+            <label>Bio (HTML allowed)</label>
+            <textarea id="editBio" style="min-height: 80px;" placeholder="I'm a passionate..."></textarea>
+        </div>
+
+        <!-- Lists Editor (JSON) -->
+        <div class="cms-box">
+            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px;">📦 Edit Dynamic Lists</h3>
+            <p style="color: #f72585; font-size: 12px; margin-bottom: 15px;">⚠️ In boxes mein JSON format mein data hai. Sirf text change karein, brackets { } ko na chherein.</p>
+            
+            <label>Calisthenics Skills</label>
+            <textarea id="editSkills" style="min-height: 150px;"></textarea>
+
+            <label>Journey / Timeline</label>
+            <textarea id="editTimeline" style="min-height: 150px;"></textarea>
+
+            <label>Social Links</label>
+            <textarea id="editSocials" style="min-height: 150px;"></textarea>
+            
+            <button class="btn-refresh" onclick="saveContent()" style="width: 100%; margin-top: 10px; padding: 15px;">
+                <i class="fas fa-save"></i> Save All Changes
+            </button>
+        </div>
+
+        <!-- Visitor Data -->
+        <div class="visitors-table-wrap">
+            <h2>🌍 Recent Visitors</h2>
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>IP</th>
+                            <th>Location</th>
+                            <th>Device</th>
+                            <th>Browser</th>
+                        </tr>
+                    </thead>
+                    <tbody id="visitorsTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+
+    <script>
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC_YsXU1czjvRmft6H1j-9Z9tN8Id0LSbQ",
+  authDomain: "eagle-portfolio205.firebaseapp.com",
+  projectId: "eagle-portfolio205",
+  storageBucket: "eagle-portfolio205.firebasestorage.app",
+  messagingSenderId: "466360593525",
+  appId: "1:466360593525:web:c50f81393c1afb1ae39c3c",
+  measurementId: "G-MEGW6QJ389"
+};
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        /* ============ AUTHENTICATION ============ */
+        async function handleLogin() {
+            const email = document.getElementById('emailInput').value;
+            const password = document.getElementById('passwordInput').value;
+            const errorMsg = document.getElementById('errorMsg');
+            const btn = event.target.closest('button');
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Checking...';
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (err) {
+                errorMsg.innerText = "❌ " + err.message;
+                errorMsg.classList.add('show');
+                setTimeout(() => errorMsg.classList.remove('show'), 4000);
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+            }
+        }
+
+        async function handleLogout() {
+            await auth.signOut();
+            window.location.reload();
+        }
+
+        // Listen to Auth State
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Login Success: Hide login screen, show dashboard
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'block';
+                loadDashboardData();
+            } else {
+                // Logout: Show login screen, hide dashboard
+                document.getElementById('loginScreen').style.display = 'block';
+                document.getElementById('dashboard').style.display = 'none';
+            }
+        });
+
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleLogin();
+        });
+
+        /* ============ LOAD DATA ============ */
+        async function loadDashboardData() {
+            // 1. Load CMS Content
+            try {
+                const doc = await db.collection('site_content').doc('main').get();
+                if(doc.exists) {
+                    const d = doc.data();
+                    if(d.name) document.getElementById('editName').value = d.name;
+                    if(d.bio) document.getElementById('editBio').value = d.bio;
+                    if(d.email) document.getElementById('editEmail').value = d.email;
+                    if(d.phone) document.getElementById('editPhone').value = d.phone;
+                    if(d.color) document.getElementById('editColor').value = d.color;
+                    if(d.skills) document.getElementById('editSkills').value = JSON.stringify(d.skills, null, 2);
+                    if(d.timeline) document.getElementById('editTimeline').value = JSON.stringify(d.timeline, null, 2);
+                    if(d.socials) document.getElementById('editSocials').value = JSON.stringify(d.socials, null, 2);
+                } else {
+                    // AGAR DATABASE KHALI HAI TOH YEH DEFAULT DATA BHAR DE
+                    const defaultSkills = [
+                      { "title": "Balance Skills", "icon": "fas fa-balance-scale", "items": [ {"name": "Handstand", "level": "Intermediate", "adv": false}, {"name": "Head Stand", "level": "Intermediate", "adv": false}, {"name": "Wall Stand", "level": "Intermediate", "adv": false}, {"name": "Frog Stand", "level": "Beginner", "adv": false}, {"name": "Crow Pose", "level": "Intermediate", "adv": false} ] },
+                      { "title": "Strength Skills", "icon": "fas fa-dumbbell", "items": [ {"name": "Elbow Lever", "level": "Intermediate", "adv": false}, {"name": "Tuck Hold", "level": "Intermediate", "adv": false}, {"name": "Tuck Planche", "level": "Intermediate", "adv": false}, {"name": "L-Sit", "level": "Intermediate", "adv": false}, {"name": "One Leg Crow Pose", "level": "Advanced", "adv": true} ] },
+                      { "title": "Advanced Skills", "icon": "fas fa-trophy", "items": [ {"name": "One Arm Elbow Lever", "level": "15 Second Hold", "adv": true}, {"name": "Strength Foundation", "level": "Solid", "adv": false}, {"name": "Mobility", "level": "Excellent", "adv": false}, {"name": "Body Control", "level": "Advanced", "adv": true}, {"name": "Core Stability", "level": "Strong", "adv": false} ] }
+                    ];
+                    const defaultTimeline = [
+                      { "date": "2023 - Present", "title": "Graphic Designing", "desc": "Started my graphic design journey 2 years ago. Have completed numerous projects including logos, social media graphics, and digital artwork." },
+                      { "date": "2024 - Present", "title": "Video Editing", "desc": "Developed video editing skills for creating engaging content for TikTok, YouTube, and other social platforms." },
+                      { "date": "August 1, 2025", "title": "Calisthenics Journey Begins", "desc": "Started my calisthenics training. Have since mastered skills like elbow lever, handstand, frog stand, crow pose, and even advanced one-arm elbow lever with 15-second hold." },
+                      { "date": "2025 - Present", "title": "Web Development Basics", "desc": "Started learning web development to expand my digital skill set and create functional websites." }
+                    ];
+                    const defaultSocials = [
+                      { "type": "whatsapp", "title": "WhatsApp", "icon": "fab fa-whatsapp", "url": "https://wa.me/923464198257?text=ASSALAMUALAIKUM" },
+                      { "type": "tiktok", "title": "EAGLE GRAPHICS", "icon": "fab fa-tiktok", "url": "https://www.tiktok.com/@eagle_editz205" },
+                      { "type": "tiktok", "title": "EAGLE THENICS", "icon": "fab fa-tiktok", "url": "https://www.tiktok.com/@eaglethenics205" },
+                      { "type": "youtube", "title": "EAGLE GAMING205", "icon": "fab fa-youtube", "url": "https://www.youtube.com/@eaglegaming205" }
+                    ];
+
+                    document.getElementById('editSkills').value = JSON.stringify(defaultSkills, null, 2);
+                    document.getElementById('editTimeline').value = JSON.stringify(defaultTimeline, null, 2);
+                    document.getElementById('editSocials').value = JSON.stringify(defaultSocials, null, 2);
+                }
+            } catch(e) { console.log("CMS Load Error", e); }
+
+            // 2. Load Visitors (Ye waisa hi rahega)
+            try {
+                const snapshot = await db.collection('visitors').orderBy('timestamp', 'desc').limit(50).get();
+                const visitors = snapshot.docs.map(doc => doc.data());
+                
+                document.getElementById('statTotal').textContent = visitors.length;
+                document.getElementById('statCountries').textContent = new Set(visitors.map(v => v.country)).size;
+                document.getElementById('recordCount').textContent = `${visitors.length} total visits`;
+
+                if(visitors.length === 0) {
+                    document.getElementById('visitorsTableBody').innerHTML = '<tr><td colspan="5" style="text-align:center;">No visitors yet.</td></tr>';
+                    return;
+                }
+
+                document.getElementById('visitorsTableBody').innerHTML = visitors.map(v => {
+                    const d = v.timestamp ? v.timestamp.toDate().toLocaleString() : 'Just now';
+                    return `
+                        <tr>
+                            <td>${d}</td>
+                            <td><code style="color:#7fa3ff;">${v.ip || '—'}</code></td>
+                            <td>${v.city || '—'}, ${v.country || '—'}</td>
+                            <td><span class="device-tag ${(v.device||'').toLowerCase()}">${v.device || '—'}</span></td>
+                            <td>${v.browser || '—'}</td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch(e) { console.log("Visitors Load Error", e); }
+        }
+
+        
+    </script>
+</body>
+</html>
