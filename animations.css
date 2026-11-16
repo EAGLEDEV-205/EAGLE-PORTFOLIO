@@ -1,0 +1,270 @@
+/* ============================================
+   EAGLE PORTFOLIO - ANIMATIONS & RESPONSIVE
+   All animations, keyframes, media queries
+   ============================================ */
+
+/* ============ KEYFRAMES ============ */
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes expandLine {
+    from { width: 0; }
+    to { width: 80px; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bgPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulseDot {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15); }
+    50% { box-shadow: 0 0 0 10px rgba(67, 97, 238, 0.05); }
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* ============ APPLIED ANIMATIONS ============ */
+h1 {
+    animation: gradientShift 5s ease infinite;
+}
+
+h2::after {
+    animation: expandLine 1s ease-out;
+}
+
+.logo-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+.hero::before {
+    animation: bgPulse 8s ease-in-out infinite;
+}
+
+.hero h3 {
+    animation: fadeInUp 0.8s ease 0.1s both;
+}
+
+.hero h1 {
+    animation: fadeInUp 0.8s ease 0.2s both, gradientShift 5s ease infinite;
+}
+
+.hero h3:nth-of-type(2) {
+    animation: fadeInUp 0.8s ease 0.3s both;
+}
+
+.hero p {
+    animation: fadeInUp 0.8s ease 0.4s both;
+}
+
+.hero-btns {
+    animation: fadeInUp 0.8s ease 0.5s both;
+}
+
+.profile-image-wrap::before {
+    animation: spin 20s linear infinite;
+}
+
+.timeline-item::before {
+    animation: pulseDot 2s ease-in-out infinite;
+}
+
+/* Button shimmer effect */
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+    animation: shimmer 0.8s ease forwards;
+}
+
+/* ============ REVEAL ON SCROLL ============ */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ============ SKILL ITEM STAGGER ============ */
+.skill-item {
+    opacity: 0;
+    transform: translateX(-15px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.skill-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ============ RESPONSIVE - TABLET (992px) ============ */
+@media (max-width: 992px) {
+    .about-content,
+    .contact-content {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .hero-content { text-align: center; }
+    .hero-btns { justify-content: center; }
+
+    h1 { font-size: 3rem; }
+    h2 { font-size: 2.2rem; }
+    h3 { font-size: 1.6rem; }
+    p { font-size: 1.05rem; }
+    section { padding: 70px 0; }
+}
+
+/* ============ RESPONSIVE - MOBILE (768px) ============ */
+@media (max-width: 768px) {
+    .menu-toggle { display: block; }
+
+    .nav-links {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        flex-direction: column;
+        align-items: center;
+        padding: 25px 0;
+        clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+        transition: all 0.5s ease;
+        z-index: 999;
+        box-shadow: var(--shadow);
+    }
+
+    .nav-links.active {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+
+    .nav-links li { margin: 12px 0; }
+
+    .timeline::before { left: 30px; }
+
+    .timeline-item,
+    .timeline-item:nth-child(even) {
+        width: 100%;
+        margin-left: 0;
+        padding-left: 70px;
+        padding-right: 0;
+    }
+
+    .timeline-item::before,
+    .timeline-item:nth-child(even)::before {
+        left: 20px;
+        right: auto;
+    }
+
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 1.9rem; }
+    h3 { font-size: 1.4rem; }
+    p { font-size: 1rem; }
+
+    .profile-image { width: 180px; height: 180px; }
+    .profile-image-wrap::before { width: 200px; height: 200px; }
+}
+
+/* ============ RESPONSIVE - SMALL MOBILE (576px) ============ */
+@media (max-width: 576px) {
+    .hero-btns {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+
+    .container { width: 95%; padding: 0 10px; }
+
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.7rem; }
+    h3 { font-size: 1.3rem; }
+
+    .detail-item { flex-direction: column; }
+    .detail-label { width: 100%; margin-bottom: 5px; }
+
+    .skill-card,
+    .skill-category,
+    .philosophy-box,
+    .timeline-content {
+        padding: 22px;
+    }
+
+    .contact-form-wrap { padding: 25px; }
+
+    .back-to-top {
+        width: 48px;
+        height: 48px;
+        bottom: 20px;
+        right: 20px;
+    }
+
+    section { padding: 55px 0; }
+}
+
+/* ============ ACCESSIBILITY ============ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ============ PRINT STYLES ============ */
+@media print {
+    header, footer, .back-to-top, .scroll-progress, .hero-btns {
+        display: none !important;
+    }
+
+    section {
+        padding: 20px 0;
+        page-break-inside: avoid;
+    }
+
+    body {
+        color: #000;
+        background: #fff;
+    }
+}
